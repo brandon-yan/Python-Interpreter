@@ -14,7 +14,7 @@ int main(int argc, const char* argv[]){
     if (!ifs.good()) {
         std::cout<<"bad";
     }
-    ANTLRInputStream input(ifs);
+    ANTLRInputStream input(std::cin);
     Python3Lexer lexer(&input);
     CommonTokenStream tokens(&lexer);
     tokens.fill();
