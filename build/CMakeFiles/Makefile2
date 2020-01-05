@@ -97,39 +97,39 @@ clean: CMakeFiles/antlr4-cpp-runtime.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/python_interpreter.dir
+# Target rules for target CMakeFiles/code.dir
 
 # All Build rule for target.
-CMakeFiles/python_interpreter.dir/all: CMakeFiles/antlr4-cpp-runtime.dir/all
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/depend
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/c/Users/hanchong/Desktop/new/Python_Assignment-master/build/CMakeFiles --progress-num=97,98,99,100 "Built target python_interpreter"
-.PHONY : CMakeFiles/python_interpreter.dir/all
+CMakeFiles/code.dir/all: CMakeFiles/antlr4-cpp-runtime.dir/all
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/depend
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/c/Users/hanchong/Desktop/new/Python_Assignment-master/build/CMakeFiles --progress-num=97,98,99,100 "Built target code"
+.PHONY : CMakeFiles/code.dir/all
 
 # Include target in all.
-all: CMakeFiles/python_interpreter.dir/all
+all: CMakeFiles/code.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/python_interpreter.dir/rule: cmake_check_build_system
+CMakeFiles/code.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/hanchong/Desktop/new/Python_Assignment-master/build/CMakeFiles 100
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/python_interpreter.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/code.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/hanchong/Desktop/new/Python_Assignment-master/build/CMakeFiles 0
-.PHONY : CMakeFiles/python_interpreter.dir/rule
+.PHONY : CMakeFiles/code.dir/rule
 
 # Convenience name for target.
-python_interpreter: CMakeFiles/python_interpreter.dir/rule
+code: CMakeFiles/code.dir/rule
 
-.PHONY : python_interpreter
-
-# clean rule for target.
-CMakeFiles/python_interpreter.dir/clean:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/clean
-.PHONY : CMakeFiles/python_interpreter.dir/clean
+.PHONY : code
 
 # clean rule for target.
-clean: CMakeFiles/python_interpreter.dir/clean
+CMakeFiles/code.dir/clean:
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/clean
+.PHONY : CMakeFiles/code.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/code.dir/clean
 
 .PHONY : clean
 

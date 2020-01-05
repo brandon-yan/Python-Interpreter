@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /mnt/c/Users/hanchong/Desktop/new/Python_Assignment-master/bu
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -77,6 +66,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -124,17 +124,17 @@ antlr4-cpp-runtime/fast:
 .PHONY : antlr4-cpp-runtime/fast
 
 #=============================================================================
-# Target rules for targets named python_interpreter
+# Target rules for targets named code
 
 # Build rule for target.
-python_interpreter: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 python_interpreter
-.PHONY : python_interpreter
+code: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 code
+.PHONY : code
 
 # fast build rule for target.
-python_interpreter/fast:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/build
-.PHONY : python_interpreter/fast
+code/fast:
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/build
+.PHONY : code/fast
 
 generated/Python3BaseListener.o: generated/Python3BaseListener.cpp.o
 
@@ -142,7 +142,7 @@ generated/Python3BaseListener.o: generated/Python3BaseListener.cpp.o
 
 # target to build an object file
 generated/Python3BaseListener.cpp.o:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/generated/Python3BaseListener.cpp.o
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/generated/Python3BaseListener.cpp.o
 .PHONY : generated/Python3BaseListener.cpp.o
 
 generated/Python3BaseListener.i: generated/Python3BaseListener.cpp.i
@@ -151,7 +151,7 @@ generated/Python3BaseListener.i: generated/Python3BaseListener.cpp.i
 
 # target to preprocess a source file
 generated/Python3BaseListener.cpp.i:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/generated/Python3BaseListener.cpp.i
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/generated/Python3BaseListener.cpp.i
 .PHONY : generated/Python3BaseListener.cpp.i
 
 generated/Python3BaseListener.s: generated/Python3BaseListener.cpp.s
@@ -160,7 +160,7 @@ generated/Python3BaseListener.s: generated/Python3BaseListener.cpp.s
 
 # target to generate assembly for a file
 generated/Python3BaseListener.cpp.s:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/generated/Python3BaseListener.cpp.s
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/generated/Python3BaseListener.cpp.s
 .PHONY : generated/Python3BaseListener.cpp.s
 
 generated/Python3Lexer.o: generated/Python3Lexer.cpp.o
@@ -169,7 +169,7 @@ generated/Python3Lexer.o: generated/Python3Lexer.cpp.o
 
 # target to build an object file
 generated/Python3Lexer.cpp.o:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/generated/Python3Lexer.cpp.o
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/generated/Python3Lexer.cpp.o
 .PHONY : generated/Python3Lexer.cpp.o
 
 generated/Python3Lexer.i: generated/Python3Lexer.cpp.i
@@ -178,7 +178,7 @@ generated/Python3Lexer.i: generated/Python3Lexer.cpp.i
 
 # target to preprocess a source file
 generated/Python3Lexer.cpp.i:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/generated/Python3Lexer.cpp.i
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/generated/Python3Lexer.cpp.i
 .PHONY : generated/Python3Lexer.cpp.i
 
 generated/Python3Lexer.s: generated/Python3Lexer.cpp.s
@@ -187,7 +187,7 @@ generated/Python3Lexer.s: generated/Python3Lexer.cpp.s
 
 # target to generate assembly for a file
 generated/Python3Lexer.cpp.s:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/generated/Python3Lexer.cpp.s
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/generated/Python3Lexer.cpp.s
 .PHONY : generated/Python3Lexer.cpp.s
 
 generated/Python3Listener.o: generated/Python3Listener.cpp.o
@@ -196,7 +196,7 @@ generated/Python3Listener.o: generated/Python3Listener.cpp.o
 
 # target to build an object file
 generated/Python3Listener.cpp.o:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/generated/Python3Listener.cpp.o
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/generated/Python3Listener.cpp.o
 .PHONY : generated/Python3Listener.cpp.o
 
 generated/Python3Listener.i: generated/Python3Listener.cpp.i
@@ -205,7 +205,7 @@ generated/Python3Listener.i: generated/Python3Listener.cpp.i
 
 # target to preprocess a source file
 generated/Python3Listener.cpp.i:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/generated/Python3Listener.cpp.i
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/generated/Python3Listener.cpp.i
 .PHONY : generated/Python3Listener.cpp.i
 
 generated/Python3Listener.s: generated/Python3Listener.cpp.s
@@ -214,7 +214,7 @@ generated/Python3Listener.s: generated/Python3Listener.cpp.s
 
 # target to generate assembly for a file
 generated/Python3Listener.cpp.s:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/generated/Python3Listener.cpp.s
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/generated/Python3Listener.cpp.s
 .PHONY : generated/Python3Listener.cpp.s
 
 generated/Python3Parser.o: generated/Python3Parser.cpp.o
@@ -223,7 +223,7 @@ generated/Python3Parser.o: generated/Python3Parser.cpp.o
 
 # target to build an object file
 generated/Python3Parser.cpp.o:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/generated/Python3Parser.cpp.o
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/generated/Python3Parser.cpp.o
 .PHONY : generated/Python3Parser.cpp.o
 
 generated/Python3Parser.i: generated/Python3Parser.cpp.i
@@ -232,7 +232,7 @@ generated/Python3Parser.i: generated/Python3Parser.cpp.i
 
 # target to preprocess a source file
 generated/Python3Parser.cpp.i:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/generated/Python3Parser.cpp.i
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/generated/Python3Parser.cpp.i
 .PHONY : generated/Python3Parser.cpp.i
 
 generated/Python3Parser.s: generated/Python3Parser.cpp.s
@@ -241,7 +241,7 @@ generated/Python3Parser.s: generated/Python3Parser.cpp.s
 
 # target to generate assembly for a file
 generated/Python3Parser.cpp.s:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/generated/Python3Parser.cpp.s
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/generated/Python3Parser.cpp.s
 .PHONY : generated/Python3Parser.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -250,7 +250,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/src/main.cpp.o
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -259,7 +259,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/src/main.cpp.i
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -268,7 +268,7 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) -f CMakeFiles/python_interpreter.dir/build.make CMakeFiles/python_interpreter.dir/src/main.cpp.s
+	$(MAKE) -f CMakeFiles/code.dir/build.make CMakeFiles/code.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
 third_party/runtime/src/ANTLRErrorListener.o: third_party/runtime/src/ANTLRErrorListener.cpp.o
@@ -4273,10 +4273,10 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... antlr4-cpp-runtime"
-	@echo "... python_interpreter"
+	@echo "... rebuild_cache"
+	@echo "... code"
 	@echo "... generated/Python3BaseListener.o"
 	@echo "... generated/Python3BaseListener.i"
 	@echo "... generated/Python3BaseListener.s"

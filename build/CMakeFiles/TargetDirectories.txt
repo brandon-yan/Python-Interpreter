@@ -1,4 +1,4 @@
-/mnt/c/Users/hanchong/Desktop/new/Python_Assignment-master/build/CMakeFiles/rebuild_cache.dir
 /mnt/c/Users/hanchong/Desktop/new/Python_Assignment-master/build/CMakeFiles/edit_cache.dir
 /mnt/c/Users/hanchong/Desktop/new/Python_Assignment-master/build/CMakeFiles/antlr4-cpp-runtime.dir
-/mnt/c/Users/hanchong/Desktop/new/Python_Assignment-master/build/CMakeFiles/python_interpreter.dir
+/mnt/c/Users/hanchong/Desktop/new/Python_Assignment-master/build/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/hanchong/Desktop/new/Python_Assignment-master/build/CMakeFiles/code.dir
