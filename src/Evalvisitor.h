@@ -15,7 +15,7 @@ class EvalVisitor: public Python3BaseVisitor {
 //todo:override all methods of Python3BaseVisitor
 struct argumen {
   std::string nam;
-  alltype tes;
+  alltype tes = "";
 };
 struct flowstmt {
   std::string flow;
@@ -27,8 +27,20 @@ struct function {
   Python3Parser::SuiteContext *suit;
 };
 std::stack<std::map<std::string, alltype>> mystack;
-std::map<std::string, alltype> *stoa;
+std::map<std::string, alltype> globe;
 std::map<std::string, function> myfun;
+
+alltype findvalue (const std::string &name) {
+  if (mystack.empty()) return globe[name];
+  else if (mystack.top().count(name) == 0) return globe[name];
+  else return mystack.top()[name];
+}
+
+void assignment (std::string name, alltype x) {
+  if (mystack.empty()) globe[name] = x;
+  else mystack.top()[name] = x;
+}
+
 virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -90,12 +102,12 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
       std::vector<alltype> tmp1 = visitTestlist(ctx->testlist(0)).as<std::vector<alltype>>();
       std::vector<alltype> tmp2 = visitTestlist(ctx->testlist(1)).as<std::vector<alltype>>();
       std::string auga = visitAugassign(ctx->augassign()).as<std::string>();
-      if (auga == "+=") mystack.top()[tmp1[0].name] = mystack.top()[tmp1[0].name] + tmp2[0];
-      else if (auga == "-=") mystack.top()[tmp1[0].name] = mystack.top()[tmp1[0].name] - tmp2[0];
-      else if (auga == "*=") mystack.top()[tmp1[0].name] = mystack.top()[tmp1[0].name] * tmp2[0];     
-      else if (auga == "/=") mystack.top()[tmp1[0].name] = mystack.top()[tmp1[0].name] / tmp2[0];
-      else if (auga == "//=") mystack.top()[tmp1[0].name] = intdivide(mystack.top()[tmp1[0].name], tmp2[0]);
-      else if (auga == "%=") mystack.top()[tmp1[0].name] = mystack.top()[tmp1[0].name] % tmp2[0];
+      if (auga == "+=") assignment(tmp1[0].name, findvalue(tmp1[0].name) + tmp2[0]);
+      else if (auga == "-=") assignment(tmp1[0].name, findvalue(tmp1[0].name) - tmp2[0]);
+      else if (auga == "*=") assignment(tmp1[0].name, findvalue(tmp1[0].name) * tmp2[0]); 
+      else if (auga == "/=") assignment(tmp1[0].name, findvalue(tmp1[0].name) / tmp2[0]);
+      else if (auga == "//=") assignment(tmp1[0].name, intdivide(findvalue(tmp1[0].name), tmp2[0]));
+      else if (auga == "%=") assignment(tmp1[0].name, findvalue(tmp1[0].name) % tmp2[0]);;
       return nullptr;
     }
     else if (ctx->ASSIGN().size() != 0) {
@@ -103,7 +115,7 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
       std::vector<alltype> val = visitTestlist(ctx->testlist(len - 1)).as<std::vector<alltype>>();
       for (int i = 0; i < ctx->testlist().size(); ++i) {
         std::vector<alltype> tmp = visitTestlist(ctx->testlist(i)).as<std::vector<alltype>>();
-        for (int j = 0; j < tmp.size(); ++j) mystack.top()[tmp[j].name] = val[j];
+        for (int j = 0; j < tmp.size(); ++j) assignment(tmp[j].name, val[j]);
       }
       return nullptr;
     }
@@ -243,25 +255,21 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
   virtual antlrcpp::Any visitComparison(Python3Parser::ComparisonContext *ctx) override {
     if (ctx->arith_expr().size() == 1) return visitArith_expr(ctx->arith_expr(0));
     else {
-      std::vector <alltype> bb;
-      alltype tmp1 = true, tmp2 = true;
-      //std::cout << tmp1.booval << std::endl;
-      for (int i = 0; i < ctx->arith_expr().size() - 1; ++i) {
+      alltype tmp = visitArith_expr(ctx->arith_expr(0)).as<alltype>();
+      alltype ret;
+      for (int i = 1; i < ctx->arith_expr().size(); ++i) {
         std::string comop = visitComp_op(ctx->comp_op(i)).as<std::string>();
-        alltype x1 = visitArith_expr(ctx->arith_expr(i)).as<alltype>(), x2 = visitArith_expr(ctx->arith_expr(i + 1)).as<alltype>();
-        if (comop == "<") tmp1 = x1 < x2;
-        else if (comop == ">") tmp1 = x1 > x2;
-        else if (comop == "==") tmp1 = x1 == x2;        
-        else if (comop == ">=") tmp1 = x1 >= x2;
-        else if (comop == "<=") tmp1 = x1 <= x2;
-        else if (comop == "!=") tmp1 = x1 != x2;
-        bb.push_back(tmp1);
+        alltype x1 = visitArith_expr(ctx->arith_expr(i)).as<alltype>();
+        if (comop == "<") ret = tmp < x1;
+        else if (comop == ">") ret = tmp > x1;
+        else if (comop == "==") ret = tmp == x1;        
+        else if (comop == ">=") ret = tmp >= x1;
+        else if (comop == "<=") ret = tmp <= x1;
+        else if (comop == "!=") ret = tmp != x1;
+        tmp = x1;
+        if (ret.booval == false) break;
       }
-      for (int i = 0; i < bb.size(); ++i) {
-        tmp2 = tmp2 && bb[i];
-        if (tmp2.booval == false) break;
-      }
-      return tmp2;
+      return ret;
     }
   }
 
@@ -347,7 +355,7 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
     if (ctx->trailer() != nullptr) {
       alltype tmp = visitAtom(ctx->atom()).as<alltype>();
       std::vector<argumen> arglis = visitTrailer(ctx->trailer()).as<std::vector<argumen>>();
-      if (tmp.name == "print") {
+      if (tmp.name == (std::string)"print") {
         for (int i = 0; i < arglis.size(); ++i) {
           alltype ret = arglis[i].tes;
           if (ret.name == "") {
@@ -361,7 +369,7 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
             if (ret.Type == NONE) std::cout << (std::string)"None" << " ";
           }
           else {
-            alltype ret1 = mystack.top()[ret.name];
+            alltype ret1 = findvalue(ret.name);
             if (ret1.Type == INT) std::cout << (std::string)ret1.intval << " ";
             if (ret1.Type == DOUBLE) std::cout << std::fixed << std::setprecision(6) << ret1.booval << " ";
             if (ret1.Type == STRING) std::cout << ret1.strval << " ";
@@ -374,31 +382,43 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
         }
         std::cout << std::endl;
       }
-      if (tmp.name == "int") {
+      if (tmp.name == (std::string)"int") {
         alltype ret = arglis[0].tes;
         Bigint ret1 = ret.toINT();
         alltype ret2 = ret1;
         return ret2;
       }
-      if (tmp.name == "float") {
+      if (tmp.name == (std::string)"float") {
         alltype ret = arglis[0].tes;
         double ret1 = ret.toDOUBLE();
         alltype ret2 = ret1;
         return ret2;
       }
-      if (tmp.name == "string") {
+      if (tmp.name == (std::string)"string") {
         alltype ret = arglis[0].tes;
         std::string ret1 = ret.toSTRING();
         alltype ret2 = ret1;
         return ret2;
       }
-      if (tmp.name == "bool") {
+      if (tmp.name == (std::string)"bool") {
         alltype ret = arglis[0].tes;
         bool ret1 = ret.toBOOL();
         alltype ret2 = ret1;
         return ret2;
       }
-      
+      else {
+        function afun = myfun[tmp.name];
+        std::map<std::string, alltype> local;
+        std::vector<argumen> funclist = visitTrailer(ctx->trailer());
+        for (int i = 0; i < afun.typelist.size(); ++i) local[afun.typelist[i].nam] = afun.typelist[i].tes;
+        for (int i = 0; i < funclist.size(); ++i) {
+          if (funclist[i].tes.Type == NONE) continue;
+          else (local[funclist[i].nam] = funclist[i].tes);
+        }
+        mystack.push(local);
+        visitSuite(afun.suit);
+        mystack.pop();
+      }
     }
     return visitAtom(ctx->atom());
   }
@@ -410,13 +430,13 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
   virtual antlrcpp::Any visitAtom(Python3Parser::AtomContext *ctx) override {
     if (ctx->NAME() != nullptr) {
       std::string tmp = ctx->NAME()->toString();
-      if (mystack.top().count(tmp) == 0) {
+      if ((globe.count(tmp) == 0 && mystack.empty()) || (mystack.top().count(tmp) == 0 && !mystack.empty())) {
         alltype ret;
         ret.name = ctx->NAME()->toString();
         return ret;
       }
       else {
-        alltype ret = mystack.top()[ctx->NAME()->toString()];
+        alltype ret = findvalue(ctx->NAME()->toString());
         ret.name = ctx->NAME()->toString();
         return ret;
       }
