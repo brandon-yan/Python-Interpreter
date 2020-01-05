@@ -1,0 +1,7 @@
+#While Statement Test
+i = 0
+while i < 10:
+    print("**********")
+    if i >= 5:
+        return 1
+    i += 1
