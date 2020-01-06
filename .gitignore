@@ -8,7 +8,6 @@
 /*.o
 /BigIntegerTest/*
 /CMakeFiles/*
-/src/main.cpp
 /CMakeCache.txt
 /testData/*
 /*.a

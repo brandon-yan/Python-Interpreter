@@ -341,10 +341,10 @@ virtual antlrcpp::Any visitComparison(Python3Parser::ComparisonContext *ctx) ove
       }
       std::sort(oper + 0, oper + len1 + len2 + len3 + len4);
       for (int i = 1; i < ctx->factor().size(); ++i) {
-        if (oper[i - 1].second == '*') tmp = tmp * visitFactor(ctx->factor(i));
-        if (oper[i - 1].second == '/') tmp = tmp / visitFactor(ctx->factor(i));
-        if (oper[i - 1].second == 'i') tmp = intdivide(tmp, visitFactor(ctx->factor(i)));
-        if (oper[i - 1].second == '%') tmp = tmp % visitFactor(ctx->factor(i));
+        if (oper[i - 1].second == '*') tmp = tmp * visitFactor(ctx->factor(i)).as<alltype>();
+        if (oper[i - 1].second == '/') tmp = tmp / visitFactor(ctx->factor(i)).as<alltype>();
+        if (oper[i - 1].second == 'i') tmp = intdivide(tmp, visitFactor(ctx->factor(i))).as<alltype>();
+        if (oper[i - 1].second == '%') tmp = tmp % visitFactor(ctx->factor(i)).as<alltype>();
       }
       return tmp;
     }
@@ -437,6 +437,10 @@ virtual antlrcpp::Any visitComparison(Python3Parser::ComparisonContext *ctx) ove
 
   virtual antlrcpp::Any visitTrailer(Python3Parser::TrailerContext *ctx) override {
     if (ctx->arglist() != nullptr) return visitArglist(ctx->arglist());
+    else {
+      std::vector<argumen> ret;
+      return ret;
+    }
   }
 
   virtual antlrcpp::Any visitAtom(Python3Parser::AtomContext *ctx) override {
