@@ -343,7 +343,7 @@ virtual antlrcpp::Any visitComparison(Python3Parser::ComparisonContext *ctx) ove
       for (int i = 1; i < ctx->factor().size(); ++i) {
         if (oper[i - 1].second == '*') tmp = tmp * visitFactor(ctx->factor(i)).as<alltype>();
         if (oper[i - 1].second == '/') tmp = tmp / visitFactor(ctx->factor(i)).as<alltype>();
-        if (oper[i - 1].second == 'i') tmp = intdivide(tmp, visitFactor(ctx->factor(i))).as<alltype>();
+        if (oper[i - 1].second == 'i') tmp = intdivide(tmp, visitFactor(ctx->factor(i)).as<alltype>());
         if (oper[i - 1].second == '%') tmp = tmp % visitFactor(ctx->factor(i)).as<alltype>();
       }
       return tmp;
