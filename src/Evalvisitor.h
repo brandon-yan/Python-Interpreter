@@ -169,13 +169,23 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
   }
 
   virtual antlrcpp::Any visitIf_stmt(Python3Parser::If_stmtContext *ctx) override {
+    int flag = 0;
     for (int i = 0; i < ctx->test().size(); ++i) {
       alltype ifstmt = visitTest(ctx->test(i)).as<alltype>();
-      if (ifstmt.booval == 1) {
+      alltype ifnot;
+      if (ifstmt.name != "") ifnot = findvalue(ifstmt.name);
+      else ifnot = ifstmt;
+      if (ifnot.booval == 1) {
         antlrcpp::Any ifflow = visitSuite(ctx->suite(i));
         if (ifflow.is<flowstmt>()) return ifflow;
+        flag = 1;
         break;
       }
+    }
+    if (flag == 0) {
+      int len = ctx->suite().size() - 1;
+      antlrcpp::Any ifflo = visitSuite(ctx->suite(len));
+      if (ifflo.is<flowstmt>()) return ifflo;
     }
     return nullptr;
   }

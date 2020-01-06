@@ -417,7 +417,7 @@ alltype operator<(const alltype &x1, const alltype &x2) {
     if (x1.Type != STRING && x2.Type != STRING) return alltype(x1.toDOUBLE() < x2.toDOUBLE());
 }
 alltype operator>(const alltype &x1, const alltype &x2) {
-    alltype x3 = (x1 < x2);
+    alltype x3 = (x1 <= x2);
     if (x3.booval == true) return alltype(false);
     else return alltype(true);
 }
