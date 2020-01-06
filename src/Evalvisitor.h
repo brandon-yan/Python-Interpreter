@@ -422,21 +422,25 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
         for (int i = 0; i < afun.typelist.size(); ++i) local[afun.typelist[i].nam] = afun.typelist[i].tes;
         for (int i = 0; i < arglis.size(); ++i) {
           if (arglis[i].nam == "") {
-            //std::cout << "111" << std::endl;
             local[afun.typelist[i].nam] = arglis[i].tes;
           }
           else {
             local[arglis[i].nam] = arglis[i].tes;
           }
         }
-        //std::cout << arglis[0].tes.name << " " << (std::string)local[arglis[0].tes.name].intval;
         mystack.push(local);
-        visitSuite(afun.suit);
+        antlrcpp::Any retwhat = visitSuite(afun.suit);
         mystack.pop();
+        if (retwhat.is<flowstmt>()) {
+          flowstmt retstmt = retwhat.as<flowstmt>();
+          if (retstmt.flow == "return") {
+            if (retstmt.retlist.size() == 1) return retstmt.retlist[0];
+            else return retstmt.retlist;
+          }
+        }
       }
     }
-    auto ret = visitAtom(ctx->atom());
-    return ret;
+    return visitAtom(ctx->atom());
   }
 
   virtual antlrcpp::Any visitTrailer(Python3Parser::TrailerContext *ctx) override {
@@ -503,10 +507,22 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
   }
 
   virtual antlrcpp::Any visitTestlist(Python3Parser::TestlistContext *ctx) override {
-    std::vector<alltype> tmp;
-    for (int i = 0; i < ctx->test().size(); ++i)
-      tmp.push_back(visitTest(ctx->test(i)).as<alltype>());
-    return tmp;
+    if (ctx->test().size() == 1) {
+      antlrcpp::Any tmp = visitTest(ctx->test(0));
+      if (tmp.is<std::vector<alltype>>()) return tmp;
+      if (tmp.is<alltype>()) {
+        alltype tmp1 = tmp.as<alltype>();
+        std::vector<alltype> ret;
+        ret.push_back(tmp1);
+        return ret;
+      }
+    }
+    else {
+      std::vector<alltype> tmp;
+      for (int i = 0; i < ctx->test().size(); ++i)
+        tmp.push_back(visitTest(ctx->test(i)).as<alltype>());
+      return tmp;
+    }
   }
 
   virtual antlrcpp::Any visitArglist(Python3Parser::ArglistContext *ctx) override {
