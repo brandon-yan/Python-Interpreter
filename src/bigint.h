@@ -111,11 +111,11 @@ class alltype {
     friend alltype operator&&(const alltype &x1, const alltype &x2);
     
     public:
-    Bigint intval;
-    double douval;
-    string strval;
-    bool booval;
-    typee Type;
+    Bigint intval = (string)"";
+    double douval = 0.0;
+    string strval = "";
+    bool booval = false;
+    typee Type = NONE;
     string name = "";
 
     alltype(): Type(NONE) {}

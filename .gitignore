@@ -1,6 +1,6 @@
 # Project exclude paths
 /cmake-build-debug/
-/Cmakelists/
+/*.txt
 /.idea/
 /cmake-build-debug/*
 /build/*
@@ -13,4 +13,6 @@
 /*.a
 /code
 /cmake_install.cmake
+/src/main.cpp
+
 

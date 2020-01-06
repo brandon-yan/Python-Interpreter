@@ -15,15 +15,15 @@ class EvalVisitor: public Python3BaseVisitor {
 
 //todo:override all methods of Python3BaseVisitor
 struct argumen {
-  std::string nam;
+  std::string nam = "";
   alltype tes = "";
 };
 struct flowstmt {
-  std::string flow;
+  std::string flow = "";
   std::vector<alltype> retlist;
 };
 struct function {
-  std::string nam;
+  std::string nam = "";
   std::vector<argumen> typelist;
   Python3Parser::SuiteContext *suit;
 };
@@ -56,11 +56,15 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
       func.typelist = tmp.as<std::vector<argumen>>();
     func.suit = ctx->suite();
     myfun[func.nam] = func;
-    return visitChildren(ctx);
+    return nullptr;
   }
 
   virtual antlrcpp::Any visitParameters(Python3Parser::ParametersContext *ctx) override {
     if (ctx->typedargslist() != nullptr) return visitTypedargslist(ctx->typedargslist());
+    else {
+      std::vector<argumen> ret;
+      return ret;
+    }
   }
 
   virtual antlrcpp::Any visitTypedargslist(Python3Parser::TypedargslistContext *ctx) override {
@@ -78,7 +82,6 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
     }
     for (int i = type1.size() - 1; i >= 0; --i) type2.push_back(type1[i]);
     return type2;
-    return visitChildren(ctx);
   }
 
   virtual antlrcpp::Any visitTfpdef(Python3Parser::TfpdefContext *ctx) override {       
@@ -117,13 +120,9 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
     else if (ctx->ASSIGN().size() != 0) {
       int len = ctx->testlist().size();
       std::vector<alltype> val = visitTestlist(ctx->testlist(len - 1)).as<std::vector<alltype>>();
-      //std::cout << ctx->testlist().size() << std::endl;
       for (int i = 0; i < ctx->testlist().size() - 1; ++i) {
         std::vector<alltype> tmp = visitTestlist(ctx->testlist(i)).as<std::vector<alltype>>();
-        //std::cout << tmp[0].name << " " << (std::string)val[0].intval << std::endl;
         for (int j = 0; j < tmp.size(); ++j) assignment(tmp[j].name, val[j]);
-        //std::cout << globe.count("a") << std::endl; 
-        //std::cout << tmp[0].name << " " << (std::string)globe[tmp[0].name].intval << std::endl;
       }
       return nullptr;
     }
@@ -258,7 +257,7 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
     }
   }
 
-virtual antlrcpp::Any visitComparison(Python3Parser::ComparisonContext *ctx) override {
+  virtual antlrcpp::Any visitComparison(Python3Parser::ComparisonContext *ctx) override {
     if (ctx->arith_expr().size() == 1) return visitArith_expr(ctx->arith_expr(0));
     else {
       alltype tmp = visitArith_expr(ctx->arith_expr(0)).as<alltype>();
@@ -366,7 +365,6 @@ virtual antlrcpp::Any visitComparison(Python3Parser::ComparisonContext *ctx) ove
       alltype tmp = visitAtom(ctx->atom()).as<alltype>();
       std::vector<argumen> arglis = visitTrailer(ctx->trailer()).as<std::vector<argumen>>();
       if (tmp.name == (std::string)"print") {
-        //std::cout << "xixi" << std::endl;
         for (int i = 0; i < arglis.size(); ++i) {
           alltype ret = arglis[i].tes;
           if (ret.name == "") {
@@ -420,12 +418,18 @@ virtual antlrcpp::Any visitComparison(Python3Parser::ComparisonContext *ctx) ove
       else {
         function afun = myfun[tmp.name];
         std::map<std::string, alltype> local;
-        std::vector<argumen> funclist = visitTrailer(ctx->trailer());
+        //std::cout << afun.typelist[0].nam << " " << std::endl;
         for (int i = 0; i < afun.typelist.size(); ++i) local[afun.typelist[i].nam] = afun.typelist[i].tes;
-        for (int i = 0; i < funclist.size(); ++i) {
-          if (funclist[i].tes.Type == NONE) continue;
-          else (local[funclist[i].nam] = funclist[i].tes);
+        for (int i = 0; i < arglis.size(); ++i) {
+          if (arglis[i].nam == "") {
+            //std::cout << "111" << std::endl;
+            local[afun.typelist[i].nam] = arglis[i].tes;
+          }
+          else {
+            local[arglis[i].nam] = arglis[i].tes;
+          }
         }
+        //std::cout << arglis[0].tes.name << " " << (std::string)local[arglis[0].tes.name].intval;
         mystack.push(local);
         visitSuite(afun.suit);
         mystack.pop();
@@ -446,7 +450,6 @@ virtual antlrcpp::Any visitComparison(Python3Parser::ComparisonContext *ctx) ove
   virtual antlrcpp::Any visitAtom(Python3Parser::AtomContext *ctx) override {
     if (ctx->NAME() != nullptr) {
       std::string tmp = ctx->NAME()->toString();
-      //std::cout << globe.count("a") <<" " << (tmp == "a") << mystack.empty() << std::endl;
       if ((globe.count(tmp) == 0 && mystack.empty()) || (!mystack.empty() && mystack.top().count(tmp) == 0 )) {
         //std::cout << "why" << std::endl;
         alltype ret;
@@ -520,9 +523,9 @@ virtual antlrcpp::Any visitComparison(Python3Parser::ComparisonContext *ctx) ove
       argu.tes = visitTest(ctx->test()).as<alltype>();
     }
     else {
+      argu.nam = "";
       argu.tes = visitTest(ctx->test()).as<alltype>();
     }
-    //std::cout << argu.tes.Type << std::endl;
     return argu;
   }
 
