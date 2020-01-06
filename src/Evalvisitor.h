@@ -241,25 +241,21 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
   virtual antlrcpp::Any visitComparison(Python3Parser::ComparisonContext *ctx) override {
     if (ctx->arith_expr().size() == 1) return visitArith_expr(ctx->arith_expr(0));
     else {
-      std::vector <alltype> bb;
-      alltype tmp1 = true, tmp2 = true;
-      //std::cout << tmp1.booval << std::endl;
-      for (int i = 0; i < ctx->arith_expr().size() - 1; ++i) {
-        std::string comop = visitComp_op(ctx->comp_op(i)).as<std::string>();
-        alltype x1 = visitArith_expr(ctx->arith_expr(i)).as<alltype>(), x2 = visitArith_expr(ctx->arith_expr(i + 1)).as<alltype>();
-        if (comop == "<") tmp1 = x1 < x2;
-        else if (comop == ">") tmp1 = x1 > x2;
-        else if (comop == "==") tmp1 = x1 == x2;        
-        else if (comop == ">=") tmp1 = x1 >= x2;
-        else if (comop == "<=") tmp1 = x1 <= x2;
-        else if (comop == "!=") tmp1 = x1 != x2;
-        bb.push_back(tmp1);
+      alltype tmp = visitArith_expr(ctx->arith_expr(0)).as<alltype>();
+      alltype ret;
+      for (int i = 1; i < ctx->arith_expr().size(); ++i) {
+        std::string comop = visitComp_op(ctx->comp_op(i - 1)).as<std::string>();
+        alltype x1 = visitArith_expr(ctx->arith_expr(i)).as<alltype>();
+        if (comop == "<") ret = tmp < x1;
+        else if (comop == ">") ret = tmp > x1;
+        else if (comop == "==") ret = tmp == x1;        
+        else if (comop == ">=") ret = tmp >= x1;
+        else if (comop == "<=") ret = tmp <= x1;
+        else if (comop == "!=") ret = tmp != x1;
+        tmp = x1;
+        if (ret.booval == false) break;
       }
-      for (int i = 0; i < bb.size(); ++i) {
-        tmp2 = tmp2 && bb[i];
-        if (tmp2.booval == false) break;
-      }
-      return tmp2;
+      return ret;
     }
   }
 
@@ -275,22 +271,23 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
   virtual antlrcpp::Any visitArith_expr(Python3Parser::Arith_exprContext *ctx) override {
     if (ctx->term().size() == 1) return visitTerm(ctx->term(0));
     else {
-      alltype tmp = visitTerm(ctx->term(0));
-      std::string oper = "0";
+      std::pair<int, char> oper[10000];
+      alltype tmp = visitTerm(ctx->term(0)).as<alltype>();
       int x;
-      for (int i = 0; i < 100000; ++i) oper = oper + "0";
-      for (int i = 0; i < ctx->ADD().size(); ++i) {
+      int len1 = ctx->ADD().size();
+      int len2 = ctx->MINUS().size();
+      for (int i = 0; i < len1; ++i) {
         x = ctx->ADD(i)->getSymbol()->getTokenIndex();
-        oper[x] = '+';
-      } 
-      for (int i = 0; i < ctx->MINUS().size(); ++i) {
-        x = ctx->MINUS(i)->getSymbol()->getTokenIndex();
-        oper[x] = '-';
+        oper[i] = std::make_pair(x, '+');
       }
-      oper.erase(remove(oper.begin(), oper.end(), '0'), oper.end());
+      for (int i = 0; i < len2; ++i) {
+        x = ctx->MINUS(i)->getSymbol()->getTokenIndex();
+        oper[len1 + i] = std::make_pair(x, '-');
+      }
+      std::sort(oper + 0, oper + len1 + len2);
       for (int i = 1; i < ctx->term().size(); ++i) {
-        if (oper[i - 1] == '+') tmp = tmp + visitTerm(ctx->term(i));
-        if (oper[i - 1] == '-') tmp = tmp - visitTerm(ctx->term(i));
+        if (oper[i - 1].second == '+') tmp = tmp + visitTerm(ctx->term(i)).as<alltype>();
+        if (oper[i - 1].second == '-') tmp = tmp - visitTerm(ctx->term(i)).as<alltype>();
       }
       return tmp;
     }
@@ -299,32 +296,35 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
   virtual antlrcpp::Any visitTerm(Python3Parser::TermContext *ctx) override {
     if (ctx->factor().size() == 1) return visitFactor(ctx->factor(0));
     else {
+      std::pair<int, char> oper[10000];
       alltype tmp = visitFactor(ctx->factor(0)).as<alltype>();
-      std::string oper = "0";
       int x;
-      for (int i = 0; i < 100000; ++i) oper = oper + "0";
-      for (int i = 0; i < ctx->STAR().size(); ++i) {
+      int len1 = ctx->STAR().size();
+      int len2 = ctx->DIV().size();
+      int len3 = ctx->IDIV().size();
+      int len4 = ctx->MOD().size();
+      for (int i = 0; i < len1; ++i) {
         x = ctx->STAR(i)->getSymbol()->getTokenIndex();
-        oper[x] = '*';
-      } 
-      for (int i = 0; i < ctx->DIV().size(); ++i) {
+        oper[i] = std::make_pair(x, '*');
+      }
+      for (int i = 0; i < len2; ++i) {
         x = ctx->DIV(i)->getSymbol()->getTokenIndex();
-        oper[x] = '/';
+        oper[len1 + i] = std::make_pair(x, '/');
       }
-      for (int i = 0; i < ctx->IDIV().size(); ++i) {
+      for (int i = 0; i < len3; ++i) {
         x = ctx->IDIV(i)->getSymbol()->getTokenIndex();
-        oper[x] = 'i';
+        oper[len1 + len2 + i] = std::make_pair(x, 'i');
       }
-      for (int i = 0; i < ctx->MOD().size(); ++i) {
+      for (int i = 0; i < len4; ++i) {
         x = ctx->MOD(i)->getSymbol()->getTokenIndex();
-        oper[x] = '%';
+        oper[len1 + len2 + len3 + i] = std::make_pair(x, '%');
       }
-      oper.erase(remove(oper.begin(), oper.end(), '0'), oper.end());
+      std::sort(oper + 0, oper + len1 + len2 + len3 + len4);
       for (int i = 1; i < ctx->factor().size(); ++i) {
-        if (oper[i - 1] == '*') tmp = tmp * visitFactor(ctx->factor(i));
-        if (oper[i - 1] == '/') tmp = tmp / visitFactor(ctx->factor(i));
-        if (oper[i - 1] == 'i') tmp = intdivide(tmp, visitFactor(ctx->factor(i)));
-        if (oper[i - 1] == '%') tmp = tmp % visitFactor(ctx->factor(i));
+        if (oper[i - 1].second == '*') tmp = tmp * visitFactor(ctx->factor(i));
+        if (oper[i - 1].second == '/') tmp = tmp / visitFactor(ctx->factor(i));
+        if (oper[i - 1].second == 'i') tmp = intdivide(tmp, visitFactor(ctx->factor(i)));
+        if (oper[i - 1].second == '%') tmp = tmp % visitFactor(ctx->factor(i));
       }
       return tmp;
     }
