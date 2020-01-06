@@ -2,3 +2,16 @@
 /cmake-build-debug/
 /Cmakelists/
 /.idea/
+/cmake-build-debug/*
+/build/*
+/Makefile
+/*.o
+/BigIntegerTest/*
+/CMakeFiles/*
+/src/main.cpp
+/CMakeCache.txt
+/testData/*
+/*.a
+/code
+/cmake_install.cmake
+

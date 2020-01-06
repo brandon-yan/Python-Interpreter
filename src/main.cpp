@@ -9,7 +9,12 @@ using namespace antlr4;
 int main(int argc, const char* argv[]){
     //todo:please don't modify the code below the construction of ifs if you want to use visitor mode
     const std::string filepath=argv[1];
-    ANTLRInputStream input(std::cin);
+    std::ifstream ifs;
+    ifs.open(filepath);
+    if (!ifs.good()) {
+        std::cout<<"bad";
+    }
+    ANTLRInputStream input(ifs);
     Python3Lexer lexer(&input);
     CommonTokenStream tokens(&lexer);
     tokens.fill();
@@ -17,5 +22,6 @@ int main(int argc, const char* argv[]){
     tree::ParseTree* tree=parser.file_input();
     EvalVisitor visitor;
     visitor.visit(tree);
+    ifs.close();
     return 0;
 }
