@@ -82,6 +82,14 @@ class Bigint {
         if (number.size() == 1 && number[0] == 0) positive = 1;
         return *this;
     }
+    Bigint delzero() const {
+        Bigint x2;
+        x2.number = number;
+        x2.positive = positive;
+        while(x2.number.size() > 1 && x2.number.back() == 0) x2.number.pop_back(); 
+        return x2;
+    }
+    
     explicit operator int () const;
     explicit operator double () const;
     explicit operator string () const;
@@ -133,12 +141,15 @@ class alltype {
     }
     alltype(bool x): Type(BOOL), booval(x), intval(x) {}
 
-    Bigint toINT() const {
+    Bigint toINT() const{
         switch(Type) {
-            case INT: return intval; break;
-            case DOUBLE: return Bigint ((long long) douval);
-            case STRING: return Bigint (strval); break;
-            case BOOL: return intval; break;
+            case INT: return intval.delzero(); break;
+            case DOUBLE: return (Bigint ((long long) douval)).delzero(); break;
+            case STRING: return (Bigint (strval)).delzero(); break;
+            case BOOL: {
+                if (booval == false) return (Bigint)"0";
+                else return (Bigint)"1";
+            } break;
             default: return Bigint(); break;
         }
     }

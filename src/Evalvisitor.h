@@ -491,10 +491,12 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
     }
     else if (ctx->TRUE() != nullptr) {
       alltype ret = "True";
+      ret.booval = 1;
       return ret;
     }
     else if (ctx->FALSE() != nullptr) {
       alltype ret = "False";
+      ret.booval = 0;
       return ret;
     }
     return visit(ctx->test());
