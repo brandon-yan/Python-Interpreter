@@ -377,7 +377,8 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
       if (tmp.name == (std::string)"print") {
         for (int i = 0; i < arglis.size(); ++i) {
           alltype ret = arglis[i].tes;
-          if (ret.name == "") {
+          //std::cout << (std::string)ret.intval << std::endl;
+          //if (ret.name == "") {
             if (ret.Type == INT) std::cout << (std::string)ret.intval << " ";
             if (ret.Type == DOUBLE) std::cout << std::fixed << std::setprecision(6) << ret.douval << " ";
             if (ret.Type == STRING) std::cout << ret.strval << " ";
@@ -386,18 +387,19 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
               else std::cout << "False" << " ";
             }
             if (ret.Type == NONE) std::cout << (std::string)"None" << " ";
-          }
-          else {
-            alltype ret1 = findvalue(ret.name);
-            if (ret1.Type == INT) std::cout << (std::string)ret1.intval << " ";
-            if (ret1.Type == DOUBLE) std::cout << std::fixed << std::setprecision(6) << ret1.douval << " ";
-            if (ret1.Type == STRING) std::cout << ret1.strval << " ";
-            if (ret.Type == BOOL) {
-              if (ret.booval == 1 ) std::cout << "True" << " ";
-              else std::cout << "False" << " ";
-            }
-            if (ret.Type == NONE) std::cout << (std::string)"None" << " ";
-          }
+          //}
+          // else {
+          //   alltype ret1 = findvalue(ret.name);
+          //   std::cout << ret1.Type << std::endl;
+          //   if (ret1.Type == INT) std::cout << (std::string)ret1.intval << " ";
+          //   if (ret1.Type == DOUBLE) std::cout << std::fixed << std::setprecision(6) << ret1.douval << " ";
+          //   if (ret1.Type == STRING) std::cout << ret1.strval << " ";
+          //   if (ret1.Type == BOOL) {
+          //     if (ret.booval == 1 ) std::cout << "True" << " ";
+          //     else std::cout << "False" << " ";
+          //   }
+          //   if (ret1.Type == NONE) std::cout << (std::string)"None" << " ";
+          // }
         }
         std::cout << std::endl;
       }
@@ -428,7 +430,6 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
       else {
         function afun = myfun[tmp.name];
         std::map<std::string, alltype> local;
-        //std::cout << afun.typelist[0].nam << " " << std::endl;
         for (int i = 0; i < afun.typelist.size(); ++i) local[afun.typelist[i].nam] = afun.typelist[i].tes;
         for (int i = 0; i < arglis.size(); ++i) {
           if (arglis[i].nam == "") {
