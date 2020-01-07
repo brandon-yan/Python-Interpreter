@@ -207,22 +207,25 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
 
   virtual antlrcpp::Any visitSuite(Python3Parser::SuiteContext *ctx) override {
     if (ctx->simple_stmt() != nullptr) {
+      std::cout << "simple" << std::endl;
       antlrcpp::Any suit = visitSimple_stmt(ctx->simple_stmt());
       if (suit.is<flowstmt>()) {
         flowstmt tmp = suit.as<flowstmt>();
         return tmp;
       }
+      else return nullptr;
     }  
     else {
       for (int i = 0; i < ctx->stmt().size(); ++i) {
+        //std::cout << "stmt" << std::endl;
         antlrcpp::Any stm = visitStmt(ctx->stmt(i));
         if (stm.is<flowstmt>()) {
           flowstmt tmp = stm.as<flowstmt>();
           return tmp;
         }
       }
+      return nullptr;
     }
-    return nullptr;
   }
 
   virtual antlrcpp::Any visitTest(Python3Parser::TestContext *ctx) override {
@@ -448,7 +451,9 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
             if (retstmt.retlist.size() == 1) return retstmt.retlist[0];
             else return retstmt.retlist;
           }
+          else return (alltype)"";
         }
+        else return (alltype)"";
       }
     }
     return visitAtom(ctx->atom());
