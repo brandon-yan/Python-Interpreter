@@ -207,7 +207,6 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
 
   virtual antlrcpp::Any visitSuite(Python3Parser::SuiteContext *ctx) override {
     if (ctx->simple_stmt() != nullptr) {
-      std::cout << "simple" << std::endl;
       antlrcpp::Any suit = visitSimple_stmt(ctx->simple_stmt());
       if (suit.is<flowstmt>()) {
         flowstmt tmp = suit.as<flowstmt>();
@@ -217,7 +216,6 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
     }  
     else {
       for (int i = 0; i < ctx->stmt().size(); ++i) {
-        //std::cout << "stmt" << std::endl;
         antlrcpp::Any stm = visitStmt(ctx->stmt(i));
         if (stm.is<flowstmt>()) {
           flowstmt tmp = stm.as<flowstmt>();
@@ -303,20 +301,20 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
   virtual antlrcpp::Any visitArith_expr(Python3Parser::Arith_exprContext *ctx) override {
     if (ctx->term().size() == 1) return visitTerm(ctx->term(0));
     else {
-      std::pair<int, char> oper[10000];
+      std::vector<std::pair<int, char>> oper;
       alltype tmp = visitTerm(ctx->term(0)).as<alltype>();
       int x;
       int len1 = ctx->ADD().size();
       int len2 = ctx->MINUS().size();
       for (int i = 0; i < len1; ++i) {
         x = ctx->ADD(i)->getSymbol()->getTokenIndex();
-        oper[i] = std::make_pair(x, '+');
+        oper.push_back(std::make_pair(x, '+'));
       }
       for (int i = 0; i < len2; ++i) {
         x = ctx->MINUS(i)->getSymbol()->getTokenIndex();
-        oper[len1 + i] = std::make_pair(x, '-');
+        oper.push_back(std::make_pair(x, '-'));
       }
-      std::sort(oper + 0, oper + len1 + len2);
+      std::sort(oper.begin(), oper.end());
       for (int i = 1; i < ctx->term().size(); ++i) {
         if (oper[i - 1].second == '+') tmp = tmp + visitTerm(ctx->term(i)).as<alltype>();
         if (oper[i - 1].second == '-') tmp = tmp - visitTerm(ctx->term(i)).as<alltype>();
@@ -328,7 +326,7 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
   virtual antlrcpp::Any visitTerm(Python3Parser::TermContext *ctx) override {
     if (ctx->factor().size() == 1) return visitFactor(ctx->factor(0));
     else {
-      std::pair<int, char> oper[10000];
+      std::vector<std::pair<int, char>> oper;
       alltype tmp = visitFactor(ctx->factor(0)).as<alltype>();
       int x;
       int len1 = ctx->STAR().size();
@@ -337,21 +335,21 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
       int len4 = ctx->MOD().size();
       for (int i = 0; i < len1; ++i) {
         x = ctx->STAR(i)->getSymbol()->getTokenIndex();
-        oper[i] = std::make_pair(x, '*');
+        oper.push_back(std::make_pair(x, '*'));
       }
       for (int i = 0; i < len2; ++i) {
         x = ctx->DIV(i)->getSymbol()->getTokenIndex();
-        oper[len1 + i] = std::make_pair(x, '/');
+        oper.push_back(std::make_pair(x, '/'));
       }
       for (int i = 0; i < len3; ++i) {
         x = ctx->IDIV(i)->getSymbol()->getTokenIndex();
-        oper[len1 + len2 + i] = std::make_pair(x, 'i');
+        oper.push_back(std::make_pair(x, 'i'));
       }
       for (int i = 0; i < len4; ++i) {
         x = ctx->MOD(i)->getSymbol()->getTokenIndex();
-        oper[len1 + len2 + len3 + i] = std::make_pair(x, '%');
+        oper.push_back(std::make_pair(x, '%'));
       }
-      std::sort(oper + 0, oper + len1 + len2 + len3 + len4);
+      std::sort(oper.begin(), oper.end());
       for (int i = 1; i < ctx->factor().size(); ++i) {
         if (oper[i - 1].second == '*') tmp = tmp * visitFactor(ctx->factor(i)).as<alltype>();
         if (oper[i - 1].second == '/') tmp = tmp / visitFactor(ctx->factor(i)).as<alltype>();
