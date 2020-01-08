@@ -418,7 +418,7 @@ virtual antlrcpp::Any visitFile_input(Python3Parser::File_inputContext *ctx) ove
         ret = ret1;
         return ret;
       }
-      else if (tmp.name == (std::string)"string") {
+      else if (tmp.name == (std::string)"str") {
         alltype ret = arglis[0].tes;
         std::string ret1 = ret.toSTRING();
         ret = ret1;
